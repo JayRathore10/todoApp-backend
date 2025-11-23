@@ -73,6 +73,10 @@ export const signIn = async(req : Request , res : Response)=>{
       })
     }
 
+    const token = jwt.sign({email  , userID : user?._id} , "secure");
+
+    res.cookie("token", token);
+
     return res.status(200).json({
       message : "Successfully Signin" , 
       user
