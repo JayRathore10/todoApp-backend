@@ -52,3 +52,35 @@ export const signUp = async (req : Request , res : Response)=>{
     })
   }
 }
+
+export const signIn = async(req : Request , res : Response)=>{
+  try{
+    const {email , password} = req.body;
+
+    if(!email || !password){
+      return res.status(401).json({
+        message : "Something " 
+      })
+    }
+    
+    const user = await userModel.findOne({email});
+
+    const result = await bcrypt.compare(password , user?.password!);
+
+    if(!result){
+      return res.status(400).json({
+        message : "You Enter invalid password"
+      })
+    }
+
+    return res.status(200).json({
+      message : "Successfully Signin" , 
+      user
+    });
+
+  }catch(err){
+    return res.status(500).json({
+      message : err
+    })
+  }
+}
