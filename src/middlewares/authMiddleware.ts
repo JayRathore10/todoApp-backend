@@ -2,7 +2,7 @@ import { Request , Response , NextFunction} from "express";
 import jwt from "jsonwebtoken";
 import { authRequest, userPlayload } from "../types/authRequest";
 
-export const islogIn = (req :authRequest , res:Response , next : NextFunction )=>{
+export const isLoggedIn = (req :authRequest , res:Response , next : NextFunction )=>{
   try{
     const {token} = req.cookies;
 
