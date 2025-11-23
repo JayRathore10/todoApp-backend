@@ -38,9 +38,24 @@ export const profileLogged = async (req : authRequest , res : Response)=>{
 }
 
 // shows the list of todos 
+// Read 
 export const todoList = async (req : authRequest ,res : Response)=>{
   try{
+    const user = await userModel.findOne({email : req.user?.email}).populate("todos");
     
+    if(!user){
+      return res.status(401).json({
+        message : "Something went wrong" 
+      })
+    }
+
+    const todos = await todoModel.findOne({userId : user?._id});
+
+    return res.status(200).json({
+      message : "All Todos" , 
+      todos : user?.todos
+    })
+
   }catch(err){
     return res.status(500).json({
       message : err
@@ -50,6 +65,7 @@ export const todoList = async (req : authRequest ,res : Response)=>{
 
 
 // making a todo 
+// Create 
 export const makeTodo = async (req : authRequest, res : Response)=>{
   try{
     const user = await userModel.findOne({email : req.user?.email});
@@ -72,6 +88,34 @@ export const makeTodo = async (req : authRequest, res : Response)=>{
     return res.status(200).json({
       message : "Todo Added" , 
       todoTask
+    })
+
+  }catch(err){
+    return res.status(500).json({
+      message : err
+    })
+  }
+}
+
+// Update is add later 
+
+export const deleteTodo = async (req : authRequest , res :Response)=>{
+  try{
+    const user = await userModel.findOne({email : req.user?.email}).populate("todos");
+
+    if(!user){
+      return res.status(401).json({
+        message : "Something went wrong" 
+      })
+    }
+
+    const {id} = req.params;
+    const todo = await todoModel.findOneAndDelete({_id : id});
+
+    return res.status(200).json({
+      message : "Deleted Successfully" , 
+      todo : todo , 
+      todos : user?.todos
     })
 
   }catch(err){
